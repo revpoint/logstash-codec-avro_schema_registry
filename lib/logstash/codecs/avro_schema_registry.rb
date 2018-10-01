@@ -132,6 +132,7 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
   config :ca_certificate, :validate => :string, :default => nil
   config :verify_mode, :validate => :string, :default => 'verify_peer'
   
+  config :continue_on_avro_error,  :validate => :boolean, :default => false
   public
   def register
 
@@ -216,10 +217,17 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
       if magic_byte != MAGIC_BYTE
         @logger.error('message does not start with magic byte')
       else
-        schema = get_schema(schema_id)
-        decoder = Avro::IO::BinaryDecoder.new(datum)
-        datum_reader = Avro::IO::DatumReader.new(schema)
-        yield LogStash::Event.new(datum_reader.read(decoder))
+        the_data = nil
+        begin
+          schema = get_schema(schema_id)
+          decoder = Avro::IO::BinaryDecoder.new(datum)
+          datum_reader = Avro::IO::DatumReader.new(schema)
+          the_data = datum_reader.read(decoder)
+        rescue => e
+          @logger.error("Avro parse error #{e} on data #{data}")
+          raise e unless @continue_on_avro_error
+        end
+        yield LogStash::Event.new(the_data)
       end
     end
   end
