@@ -251,7 +251,7 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
     encoder = Avro::IO::BinaryEncoder.new(buffer)
     dw.write(clean_event(event), encoder)
     if @binary_encoded
-       @on_event.call(event, buffer.string.to_java_bytes)
+       @on_event.call(event, buffer.string)
     else
        @on_event.call(event, Base64.strict_encode64(buffer.string))
     end
