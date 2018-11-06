@@ -51,6 +51,7 @@ MAGIC_BYTE = 0
 # - ``check_compatibility`` - will check schema compatibility before encoding.
 # - ``register_schema`` - will register the JSON schema if it does not exist.
 # - ``binary_encoded`` - will output the encoded event as a ByteArray.
+# - ``base64_encoded`` - will output in base64 encoding, deafault is true
 #   Requires the ``ByteArraySerializer`` to be set in the Kafka output config.
 # - ``client_certificate`` -  Client TLS certificate for mutual TLS
 # - ``client_key`` -  Client TLS key for mutual TLS
@@ -127,6 +128,7 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
   config :check_compatibility, :validate => :boolean, :default => false
   config :register_schema, :validate => :boolean, :default => false
   config :binary_encoded, :validate => :boolean, :default => true
+  config :base64_encoded, :validate => :boolean, :default => true
 
   # tag events with `_avroparsefailure` when decode fails
   config :tag_on_failure, :validate => :boolean, :default => false
@@ -252,8 +254,10 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
     dw.write(clean_event(event), encoder)
     if @binary_encoded
        @on_event.call(event, buffer.string.to_java_bytes)
-    else
+    elsif @base64_encoded
        @on_event.call(event, Base64.strict_encode64(buffer.string))
+    else
+       @on_event.call(event, buffer.string)
     end
   end
 end
