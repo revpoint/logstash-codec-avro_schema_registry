@@ -45,6 +45,7 @@ When this codec is used to encode, you may pass the following options:
 - ``register_schema`` - will register the JSON schema if it does not exist.
 - ``binary_encoded`` - will output the encoded event as a ByteArray.
   Requires the ``ByteArraySerializer`` to be set in the Kafka output config.
+- ``base64_encoded`` - will output the encoded event as a base64 string.
 - ``client_certificate`` -  Client TLS certificate for mutual TLS
 - ``client_key`` -  Client TLS key for mutual TLS
 - ``ca_certificate`` -  CA Certificate
