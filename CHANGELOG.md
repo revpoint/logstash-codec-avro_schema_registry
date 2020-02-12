@@ -1,3 +1,6 @@
+## 1.2.0
+ - Add base64_encoded for encode and change defaults
+
 ## 1.1.1
  - Add tag_on_failure for decode
 

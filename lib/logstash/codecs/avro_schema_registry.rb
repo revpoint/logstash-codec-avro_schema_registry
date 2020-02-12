@@ -127,8 +127,8 @@ class LogStash::Codecs::AvroSchemaRegistry < LogStash::Codecs::Base
   config :schema_string, :validate => :string, :default => nil
   config :check_compatibility, :validate => :boolean, :default => false
   config :register_schema, :validate => :boolean, :default => false
-  config :binary_encoded, :validate => :boolean, :default => true
-  config :base64_encoded, :validate => :boolean, :default => true
+  config :binary_encoded, :validate => :boolean, :default => false
+  config :base64_encoded, :validate => :boolean, :default => false
 
   # tag events with `_avroparsefailure` when decode fails
   config :tag_on_failure, :validate => :boolean, :default => false
